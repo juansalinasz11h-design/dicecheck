@@ -1,368 +1,141 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
 <title>Online Dice</title>
-
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  min-height: 100vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Arial, sans-serif;
-  color: white;
-  background:
-    radial-gradient(circle at 20% 20%, #252b63, transparent 35%),
-    radial-gradient(circle at 80% 80%, #182650, transparent 35%),
-    #070914;
-}
-
-#particles {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-.card {
-  position: relative;
-  z-index: 2;
-  width: min(92%, 560px);
-  padding: 45px;
-  text-align: center;
-  background: rgba(14, 17, 34, 0.8);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 25px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 30px 80px rgba(0,0,0,.5);
-}
-
-.logo {
-  width: 62px;
-  height: 62px;
-  margin: 0 auto 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  background: linear-gradient(135deg,#6975ff,#4350d5);
-  font-size: 27px;
-  font-weight: bold;
-}
-
-h1 {
-  font-size: 30px;
-  margin-bottom: 8px;
-}
-
-.subtitle {
-  color: #9298b5;
-  font-size: 14px;
-  margin-bottom: 35px;
-}
-
-.loader {
-  width: 52px;
-  height: 52px;
-  margin: auto;
-  border: 4px solid rgba(255,255,255,.08);
-  border-top-color: #6975ff;
-  border-right-color: #6975ff;
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
-}
-
-.loading-text {
-  margin-top: 18px;
-  color: #9da4c1;
-  font-size: 14px;
-}
-
-.terminal {
-  margin-top: 32px;
-  padding: 15px 18px;
-  text-align: left;
-  background: rgba(0,0,0,.25);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 13px;
-  font-family: monospace;
-  font-size: 12px;
-}
-
-.terminal-header {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #59617c;
-}
-
-.terminal-title {
-  margin-left: 5px;
-  color: #626b88;
-  font-size: 10px;
-}
-
-.line {
-  color: #8992b2;
-  min-height: 16px;
-}
-
-.line::before {
-  content: "> ";
-  color: #6875ff;
-}
-
-.cursor {
-  display: inline-block;
-  width: 6px;
-  height: 13px;
-  background: #6875ff;
-  margin-left: 2px;
-  vertical-align: middle;
-  animation: blink .7s infinite;
-}
-
-.result {
-  display: none;
-  animation: appear .6s ease;
-}
-
-.check {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: #45e889;
-  background: rgba(46,204,113,.1);
-  border: 1px solid rgba(46,204,113,.25);
-  font-size: 28px;
-}
-
-.result h2 {
-  font-size: 25px;
-  margin-bottom: 8px;
-}
-
-.result p {
-  color: #8991ad;
-  font-size: 14px;
-}
-
-.footer {
-  position: fixed;
-  bottom: 18px;
-  z-index: 2;
-  color: rgba(255,255,255,.25);
-  font-size: 11px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-@keyframes appear {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #070b18;
+    color: #fff;
+    font-family: Segoe UI, sans-serif;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .full {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-}
+  .card {
+    width: 420px;
+    background: #14182c;
+    border: 1px solid #2c3148;
+    border-radius: 18px;
+    text-align: center;
+    padding: 42px 36px 32px;
+  }
+  .mark {
+    width: 46px;
+    height: 46px;
+    line-height: 46px;
+    margin: 0 auto 16px;
+    background: #4f46e5;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  h1 { margin: 0; font-size: 28px; }
+  .sub { margin: 8px 0 22px; color: #8b93a7; font-size: 13px; }
+  .spin {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto;
+    border: 3px solid #2a2f55;
+    border-top-color: #6d64f5;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .scanlabel { margin: 12px 0 0; color: #8b93a7; font-size: 13px; }
+  .barwrap {
+    width: 220px;
+    height: 4px;
+    margin: 16px auto 0;
+    background: #1c2033;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bar {
+    height: 100%;
+    width: 0;
+    background: #4f46e5;
+    animation: fill 5s linear forwards;
+  }
+  @keyframes fill { to { width: 100%; } }
+  .hidden { display: none; }
+  .check {
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    margin: 0 auto 14px;
+    background: #3a1820;
+    color: #ff5c7a;
+    border-radius: 50%;
+    font-weight: 700;
+  }
+  .found { margin: 0; font-size: 20px; font-weight: 700; }
+  .done { margin: 8px 0 0; color: #8b93a7; font-size: 13px; }
+  .type {
+    margin-top: 22px;
+    color: #9aa3b8;
+    font-size: 13px;
+    font-family: Consolas, monospace;
+    min-height: 18px;
+  }
+  .foot { margin-top: 8px; color: #6d758c; font-size: 12px; }
 </style>
 </head>
-
 <body>
-
-<canvas id="particles"></canvas>
-
-<div class="card">
-
-  <div class="logo">D</div>
-
-  <h1>Online Dice</h1>
-  <p class="subtitle">Analyzing the current dice system</p>
-
-  <div id="loading">
-
-    <div class="loader"></div>
-
-    <div class="loading-text">
-      Scanning<span id="dots"></span>
+<div class="full">
+  <div class="card">
+    <div class="mark">D</div>
+    <h1>Online Dice</h1>
+    <div class="sub" id="sub">Analyzing the current dice system</div>
+    <div id="loading">
+      <div class="spin"></div>
+      <div class="scanlabel">Scanning...</div>
+      <div class="barwrap"><div class="bar"></div></div>
     </div>
-
-    <div class="terminal">
-
-      <div class="terminal-header">
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="terminal-title">SYSTEM CHECK</span>
-      </div>
-
-      <div class="line">
-        <span id="typed"></span><span class="cursor"></span>
-      </div>
-
+    <div id="result" class="hidden">
+      <div class="check">!</div>
+      <p class="found">Rigger found</p>
+      <p class="done">The scan completed successfully.</p>
     </div>
-
+    <div class="type" id="type"></div>
+    <div class="foot">Online Dice - System Scanner</div>
   </div>
-
-  <div id="result" class="result">
-    <div class="check">✓</div>
-    <h2>No riggers found</h2>
-    <p>The scan completed successfully.</p>
-  </div>
-
 </div>
-
-<div class="footer">
-  Online Dice • System Scanner
-</div>
-
 <script>
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-
-let particles = [];
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-
-resize();
-window.addEventListener("resize", resize);
-
-for (let i = 0; i < 100; i++) {
-  particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    size: Math.random() * 2 + 0.5,
-    vx: (Math.random() - 0.5) * 0.3,
-    vy: (Math.random() - 0.5) * 0.3
-  });
-}
-
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  particles.forEach(p => {
-    p.x += p.vx;
-    p.y += p.vy;
-
-    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(120,135,255,.45)";
-    ctx.fill();
-  });
-
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      let dx = particles[i].x - particles[j].x;
-      let dy = particles[i].y - particles[j].y;
-      let distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < 115) {
-        ctx.strokeStyle =
-          `rgba(100,115,255,${0.12 * (1 - distance / 115)})`;
-        ctx.lineWidth = .7;
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.stroke();
-      }
-    }
-  }
-
-  requestAnimationFrame(animateParticles);
-}
-
-animateParticles();
-
-
-const messages = [
-  "AI is ChatGPT",
-  "Initializing secure connection",
-  "Checking dice integrity",
-  "Analyzing system behavior",
-  "Searching for irregularities",
-  "Running final verification"
-];
-
-const typed = document.getElementById("typed");
-
-let messageIndex = 0;
-let charIndex = 0;
-let deleting = false;
-
-function typeText() {
-  const message = messages[messageIndex];
-
-  if (!deleting) {
-    typed.textContent = message.substring(0, charIndex + 1);
-    charIndex++;
-
-    if (charIndex >= message.length) {
-      setTimeout(() => {
-        deleting = true;
-        typeText();
-      }, 700);
-      return;
-    }
-
-    setTimeout(typeText, 45);
-
-  } else {
-    typed.textContent = message.substring(0, charIndex - 1);
-    charIndex--;
-
-    if (charIndex <= 0) {
-      deleting = false;
-      messageIndex = (messageIndex + 1) % messages.length;
-      setTimeout(typeText, 200);
-      return;
-    }
-
-    setTimeout(typeText, 25);
-  }
-}
-
-typeText();
-
-
-setTimeout(() => {
-  document.getElementById("loading").style.display = "none";
-  document.getElementById("result").style.display = "block";
+setTimeout(function () {
+  document.getElementById("loading").className = "hidden";
+  document.getElementById("result").className = "";
+  document.getElementById("sub").textContent = "Scan finished";
 }, 5000);
-</script>
 
+var lines = [
+  "(this website is grok)",
+  "(online dice - system scanner)",
+  "(scanning for 5 seconds)"
+];
+var li = 0, ci = 0, hold = 0;
+var el = document.getElementById("type");
+function tick() {
+  var line = lines[li];
+  if (ci <= line.length) {
+    el.textContent = line.slice(0, ci);
+    ci++;
+    setTimeout(tick, 48);
+    return;
+  }
+  hold++;
+  if (hold < 24) { setTimeout(tick, 70); return; }
+  hold = 0;
+  ci = 0;
+  li = (li + 1) % lines.length;
+  setTimeout(tick, 180);
+}
+tick();
+</script>
 </body>
 </html>
