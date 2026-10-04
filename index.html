@@ -9,9 +9,17 @@
     background: #070b18;
     color: #fff;
     font-family: Segoe UI, sans-serif;
+    overflow: hidden;
+  }
+  canvas#sky {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
   .full {
-    width: 100%;
+    position: relative;
+    z-index: 1;
     height: 100%;
     display: flex;
     align-items: center;
@@ -19,7 +27,7 @@
   }
   .card {
     width: 420px;
-    background: #14182c;
+    background: rgba(20, 24, 44, 0.94);
     border: 1px solid #2c3148;
     border-radius: 18px;
     text-align: center;
@@ -76,6 +84,13 @@
   }
   .found { margin: 0; font-size: 20px; font-weight: 700; }
   .done { margin: 8px 0 0; color: #8b93a7; font-size: 13px; }
+  .instructions {
+    margin: 16px 0 0;
+    color: #d5d8e4;
+    font-size: 14px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
   .type {
     margin-top: 22px;
     color: #9aa3b8;
@@ -87,6 +102,7 @@
 </style>
 </head>
 <body>
+<canvas id="sky"></canvas>
 <div class="full">
   <div class="card">
     <div class="mark">D</div>
@@ -101,16 +117,64 @@
       <div class="check">!</div>
       <p class="found">Rigger found</p>
       <p class="done">The scan completed successfully.</p>
+      <p class="instructions" id="instructions"></p>
     </div>
     <div class="type" id="type"></div>
     <div class="foot">Online Dice - System Scanner</div>
   </div>
 </div>
 <script>
+// put your own text here. shows only after "Rigger found".
+var AFTER_RESULT = "";
+
+(function () {
+  var c = document.getElementById("sky");
+  var ctx = c.getContext("2d");
+  var dots = [];
+  function size() {
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+  }
+  function seed() {
+    dots = [];
+    var n = Math.floor((c.width * c.height) / 14000);
+    for (var i = 0; i < n; i++) {
+      dots.push({
+        x: Math.random() * c.width,
+        y: Math.random() * c.height,
+        r: Math.random() * 1.6 + 0.3,
+        s: Math.random() * 0.35 + 0.05,
+        a: Math.random() * 0.55 + 0.15
+      });
+    }
+  }
+  function frame() {
+    ctx.fillStyle = "#070b18";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = "#c9d4ff";
+    for (var i = 0; i < dots.length; i++) {
+      var d = dots[i];
+      d.y -= d.s;
+      if (d.y < -2) d.y = c.height + 2;
+      ctx.globalAlpha = d.a;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, 6.28);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(frame);
+  }
+  size();
+  seed();
+  frame();
+  window.onresize = function () { size(); seed(); };
+})();
+
 setTimeout(function () {
   document.getElementById("loading").className = "hidden";
   document.getElementById("result").className = "";
   document.getElementById("sub").textContent = "Scan finished";
+  document.getElementById("instructions").textContent = AFTER_RESULT;
 }, 5000);
 
 var lines = [
