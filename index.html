@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Dice</title>
+
+  <HTA:APPLICATION
+    APPLICATIONNAME="Online Dice"
+    BORDER="thin"
+    CAPTION="yes"
+    SHOWINTASKBAR="yes"
+    SINGLEINSTANCE="yes"
+    SYSMENU="yes"
+    WINDOWSTATE="normal"
+  >
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #070914;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      width: 480px;
+      padding: 45px;
+      text-align: center;
+      background: #101326;
+      border: 1px solid #252a45;
+      border-radius: 24px;
+      box-shadow: 0 25px 70px #000;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: auto auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 17px;
+      background: linear-gradient(135deg,#6975ff,#4350d5);
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      color: #9298b5;
+      margin-bottom: 35px;
+    }
+
+    .loader {
+      width: 50px;
+      height: 50px;
+      margin: auto;
+      border: 4px solid #252943;
+      border-top-color: #6975ff;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    .loading {
+      margin-top: 18px;
+      color: #9da4c1;
+    }
+
+    .terminal {
+      margin-top: 30px;
+      padding: 15px;
+      text-align: left;
+      background: #090b16;
+      border-radius: 12px;
+      color: #8992b2;
+      font-family: monospace;
+      font-size: 12px;
+    }
+
+    .result {
+      display: none;
+    }
+
+    .check {
+      color: #45e889;
+      font-size: 55px;
+      margin-bottom: 15px;
+    }
+
+    .result p {
+      color: #8991ad;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="logo">D</div>
+
+  <h1>Online Dice</h1>
+
+  <div class="subtitle">
+    Analyzing the current dice system
+  </div>
+
+  <div id="loading">
+
+    <div class="loader"></div>
+
+    <div class="loading">
+      Scanning...
+    </div>
+
+    <div class="terminal">
+      &gt; <span id="terminalText"></span>
+    </div>
+
+  </div>
+
+  <div id="result" class="result">
+
+    <div class="check">✓</div>
+
+    <h2>No riggers found</h2>
+
+    <p>The scan completed successfully.</p>
+
+  </div>
+
+</div>
+
+<script>
+var messages = [
+  "AI is ChatGPT",
+  "Initializing secure connection",
+  "Checking dice integrity",
+  "Analyzing system behavior",
+  "Searching for irregularities",
+  "Running final verification"
+];
+
+var messageIndex = 0;
+var characterIndex = 0;
+var deleting = false;
+
+function typeText() {
+
+  var text = messages[messageIndex];
+
+  if (!deleting) {
+
+    document.getElementById("terminalText").innerText =
+      text.substring(0, characterIndex + 1);
+
+    characterIndex++;
+
+    if (characterIndex >= text.length) {
+
+      deleting = true;
+
+      setTimeout(typeText, 700);
+
+    } else {
+
+      setTimeout(typeText, 45);
+    }
+
+  } else {
+
+    document.getElementById("terminalText").innerText =
+      text.substring(0, characterIndex - 1);
+
+    characterIndex--;
+
+    if (characterIndex <= 0) {
+
+      deleting = false;
+
+      messageIndex++;
+
+      if (messageIndex >= messages.length) {
+        messageIndex = 0;
+      }
+
+      setTimeout(typeText, 200);
+
+    } else {
+
+      setTimeout(typeText, 25);
+    }
+  }
+}
+
+typeText();
+
+setTimeout(function() {
+
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("result").style.display = "block";
+
+}, 5000);
+</script>
+
+</body>
+</html>
